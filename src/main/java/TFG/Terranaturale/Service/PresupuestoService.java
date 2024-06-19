@@ -99,12 +99,6 @@ public class PresupuestoService {
         Presupuesto presupuesto = presupuestoRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Presupuesto not found"));
         File file = new File(presupuesto.getUbicacion());
         if (file.exists()){
-//            byte[] fileContent = Files.readAllBytes(file.toPath());
-//            FileDto fileDto = new FileDto();
-//            String encodedString = Base64.getEncoder().encodeToString(fileContent);
-//            fileDto.setContent(encodedString);
-//            fileDto.setFileName(file.getName());
-//            return ResponseEntity.ok().body(fileDto);
             InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
 
             return ResponseEntity.ok()

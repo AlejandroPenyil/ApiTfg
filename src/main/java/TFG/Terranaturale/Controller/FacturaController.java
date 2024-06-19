@@ -1,10 +1,14 @@
 package TFG.Terranaturale.Controller;
 
 import TFG.Terranaturale.Dto.FacturaDTO;
+import TFG.Terranaturale.Dto.PresupuestoDTO;
+import TFG.Terranaturale.Dto.UsuarioDTO;
 import TFG.Terranaturale.Service.FacturaService;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -56,5 +60,15 @@ public class FacturaController {
         }
         facturaService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/client")
+    public ResponseEntity<List<FacturaDTO>> getPresupuestoByClientId(@RequestBody UsuarioDTO id) {
+        return facturaService.findByClient(id);
+    }
+
+    @GetMapping("/douwnload/{id}")
+    public ResponseEntity<InputStreamResource> downloadPresupuesto(@PathVariable Integer id) throws IOException {
+        return facturaService.downloadFactura(id);
     }
 }

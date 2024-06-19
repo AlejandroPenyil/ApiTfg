@@ -1,12 +1,21 @@
 package TFG.Terranaturale.Service;
 
 import TFG.Terranaturale.Dto.FacturaDTO;
+import TFG.Terranaturale.Dto.UsuarioDTO;
+import TFG.Terranaturale.Exception.ResourceNotFoundException;
 import TFG.Terranaturale.Model.Factura;
+import TFG.Terranaturale.Model.Usuario;
 import TFG.Terranaturale.Repository.FacturaRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,5 +50,35 @@ public class FacturaService {
 
     public void deleteById(Integer id) {
         facturaRepository.deleteById(id);
+    }
+
+    public ResponseEntity<List<FacturaDTO>> findByClient(UsuarioDTO id) {
+        Usuario usuario = modelMapper.map(id, Usuario.class);
+        List<Factura> solicitudes = facturaRepository.findByIdCliente_Id(usuario.getId());
+
+
+
+        List<FacturaDTO> facturaDTOList = new ArrayList<>();
+        for (Factura factura : solicitudes) {
+            facturaDTOList.add(modelMapper.map(factura, FacturaDTO.class));
+        }
+        return ResponseEntity.ok(facturaDTOList);
+    }
+
+    public ResponseEntity<InputStreamResource> downloadFactura(Integer id) throws IOException {
+        Factura factura = facturaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Factura not found"));
+        File file = new File(factura.getUbicacion());
+        if (file.exists()) {
+            InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName())
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .contentLength(file.length())
+                    .body(resource);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

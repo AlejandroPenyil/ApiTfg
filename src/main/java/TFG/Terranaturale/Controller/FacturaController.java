@@ -1,8 +1,6 @@
 package TFG.Terranaturale.Controller;
 
-import TFG.Terranaturale.Dto.FacturaDTO;
-import TFG.Terranaturale.Dto.PresupuestoDTO;
-import TFG.Terranaturale.Dto.UsuarioDTO;
+import TFG.Terranaturale.Dto.*;
 import TFG.Terranaturale.Service.FacturaService;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
@@ -70,5 +68,10 @@ public class FacturaController {
     @GetMapping("/douwnload/{id}")
     public ResponseEntity<InputStreamResource> downloadPresupuesto(@PathVariable Integer id) throws IOException {
         return facturaService.downloadFactura(id);
+    }
+
+    @PostMapping("/upload")
+    public void uploadImagene(@RequestBody FileUpload imagenDTO) {
+        facturaService.uploadFile(imagenDTO);
     }
 }

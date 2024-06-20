@@ -1,9 +1,12 @@
 package TFG.Terranaturale.Service;
 
 import TFG.Terranaturale.Dto.FacturaDTO;
+import TFG.Terranaturale.Dto.FileUpload;
+import TFG.Terranaturale.Dto.ImageneDTO;
 import TFG.Terranaturale.Dto.UsuarioDTO;
 import TFG.Terranaturale.Exception.ResourceNotFoundException;
 import TFG.Terranaturale.Model.Factura;
+import TFG.Terranaturale.Model.Imagene;
 import TFG.Terranaturale.Model.Usuario;
 import TFG.Terranaturale.Repository.FacturaRepository;
 import org.modelmapper.ModelMapper;
@@ -15,8 +18,11 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -79,6 +85,37 @@ public class FacturaService {
                     .body(resource);
         } else {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    public void uploadFile(FileUpload imagenDTO) {
+        String base64Content = imagenDTO.getContent();
+
+        try {
+            // Decodificar la cadena Base64 a bytes
+            byte[] bytes = Base64.getDecoder().decode(base64Content);
+            String random = RandomStringGenerator.generateRandomString(8);
+
+            // Guardar los bytes en un archivo
+            saveToFile(bytes, "C:\\Terranaturale\\Documents\\Facturas\\" + random + imagenDTO.getFileName());
+
+            FacturaDTO immageneSaveDTO = new FacturaDTO();
+            immageneSaveDTO.setId(imagenDTO.getId());
+            immageneSaveDTO.setUbicacion("C:\\Terranaturale\\Documents\\Facturas\\" + random + imagenDTO.getFileName());
+
+            Factura imagene = modelMapper.map(immageneSaveDTO, Factura.class);
+            imagene.setFecha(Instant.now());
+
+            facturaRepository.save(imagene);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void saveToFile(byte[] content, String filename) throws IOException {
+        try (FileOutputStream fos = new FileOutputStream(filename)) {
+            fos.write(content);
         }
     }
 }

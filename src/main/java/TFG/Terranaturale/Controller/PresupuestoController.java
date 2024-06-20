@@ -1,5 +1,6 @@
 package TFG.Terranaturale.Controller;
 
+import TFG.Terranaturale.Dto.FileUpload;
 import TFG.Terranaturale.Dto.PresupuestoDTO;
 import TFG.Terranaturale.Dto.UsuarioDTO;
 import TFG.Terranaturale.Service.PresupuestoService;
@@ -57,5 +58,10 @@ public class PresupuestoController {
     @GetMapping("/douwnload/{id}")
     public ResponseEntity<InputStreamResource> downloadPresupuesto(@PathVariable Integer id) throws IOException {
         return presupuestoService.download(id);
+    }
+
+    @PostMapping("/upload")
+    public void uploadImagene(@RequestBody FileUpload imagenDTO) {
+        presupuestoService.uploadFile(imagenDTO);
     }
 }

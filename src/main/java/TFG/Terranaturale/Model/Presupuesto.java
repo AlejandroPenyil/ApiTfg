@@ -29,8 +29,8 @@ public class Presupuesto {
     @JoinColumn(name = "id_jardin", nullable = false)
     private Jardine idJardin;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id_solicitud", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_solicitud")
     private Solicitude idSolicitud;
 
     @Column(name = "ubicacion", length = 100)

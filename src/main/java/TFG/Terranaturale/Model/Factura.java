@@ -23,7 +23,7 @@ public class Factura {
     @JoinColumn(name = "id_cliente", nullable = false)
     private Usuario idCliente;
 
-    @Column(name = "ubicacion", nullable = false, length = 100)
+    @Column(name = "ubicacion", nullable = false)
     private String ubicacion;
 
 }

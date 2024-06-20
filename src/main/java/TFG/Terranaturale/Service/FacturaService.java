@@ -100,7 +100,7 @@ public class FacturaService {
             saveToFile(bytes, "C:\\Terranaturale\\Documents\\Facturas\\" + random + imagenDTO.getFileName());
 
             FacturaDTO immageneSaveDTO = new FacturaDTO();
-            immageneSaveDTO.setId(imagenDTO.getId());
+            immageneSaveDTO.setIdCliente(9);
             immageneSaveDTO.setUbicacion("C:\\Terranaturale\\Documents\\Facturas\\" + random + imagenDTO.getFileName());
 
             Factura imagene = modelMapper.map(immageneSaveDTO, Factura.class);

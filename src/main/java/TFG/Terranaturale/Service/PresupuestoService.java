@@ -129,8 +129,10 @@ public class PresupuestoService {
             saveToFile(bytes, "C:\\Terranaturale\\Documents\\Presupuestos\\" + random + imagenDTO.getFileName());
 
             PresupuestoDTO immageneSaveDTO = new PresupuestoDTO();
-            immageneSaveDTO.setId(imagenDTO.getId());
+            System.out.println(imagenDTO.getId());
+            immageneSaveDTO.setIdJardin(imagenDTO.getId());
             immageneSaveDTO.setUbicacion("C:\\Terranaturale\\Documents\\Presupuestos\\" + random + imagenDTO.getFileName());
+            immageneSaveDTO.setEstado("ESPERA");
 
             Presupuesto imagene = modelMapper.map(immageneSaveDTO, Presupuesto.class);
             imagene.setFechalEnvio(Instant.now());

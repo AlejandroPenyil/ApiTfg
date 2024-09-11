@@ -68,10 +68,10 @@ public class FacturaController {
         return facturaService.findByClient(id);
     }
 
-    @GetMapping("/douwnload/{id}")
-    public ResponseEntity<InputStreamResource> downloadPresupuesto(@PathVariable Integer id) throws IOException {
-        return facturaService.downloadFactura(id);
-    }
+//    @GetMapping("/douwnload/{id}")
+//    public ResponseEntity<InputStreamResource> downloadPresupuesto(@PathVariable Integer id) throws IOException {
+//        return facturaService.downloadFactura(id);
+//    }
 
     @PostMapping("/upload")
     public void uploadImagene(@RequestBody FileUpload imagenDTO) {

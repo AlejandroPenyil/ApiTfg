@@ -72,22 +72,23 @@ public class FacturaService {
         return ResponseEntity.ok(facturaDTOList);
     }
 
-    public ResponseEntity<InputStreamResource> downloadFactura(Integer id) throws IOException {
-        Factura factura = facturaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Factura not found"));
-        File file = new File(factura.getUbicacion());
-        if (file.exists()) {
-            InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
-
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName())
-                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                    .contentLength(file.length())
-                    .body(resource);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
+            // Todo Arreglar
+//    public ResponseEntity<InputStreamResource> downloadFactura(Integer id) throws IOException {
+//        Factura factura = facturaRepository.findById(id)
+//                .orElseThrow(() -> new ResourceNotFoundException("Factura not found"));
+//        File file = new File(factura.getIdDocument());
+//        if (file.exists()) {
+//            InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+//
+//            return ResponseEntity.ok()
+//                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName())
+//                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+//                    .contentLength(file.length())
+//                    .body(resource);
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
 
     public void uploadFile(FileUpload imagenDTO) {
         String base64Content = imagenDTO.getContent();

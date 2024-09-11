@@ -1,17 +1,17 @@
 package TFG.Terranaturale.Service;
 
-import TFG.Terranaturale.Dto.FacturaDTO;
-import TFG.Terranaturale.Dto.FileUpload;
-import TFG.Terranaturale.Dto.PresupuestoDTO;
-import TFG.Terranaturale.Dto.UsuarioDTO;
-import TFG.Terranaturale.Exception.ResourceNotFoundException;
-import TFG.Terranaturale.Model.Factura;
-import TFG.Terranaturale.Model.Presupuesto;
-import TFG.Terranaturale.Model.Solicitude;
-import TFG.Terranaturale.Model.Usuario;
+import Dto.FileUpload;
+import Dto.PresupuestoDTO;
+import Dto.UsuarioDTO;
+import Entity.Solicitude;
+import Entity.Usuario;
+import Entity.Presupuesto;
+import Exception.ResourceNotFoundException;
+
 import TFG.Terranaturale.Repository.JardineRepository;
 import TFG.Terranaturale.Repository.PresupuestoRepository;
 import TFG.Terranaturale.Repository.SolicitudeRepository;
+import TFG.Terranaturale.Util.RandomStringGenerator;
 import org.modelmapper.ModelMapper;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;

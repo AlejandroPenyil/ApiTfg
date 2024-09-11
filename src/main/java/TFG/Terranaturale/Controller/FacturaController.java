@@ -1,6 +1,9 @@
 package TFG.Terranaturale.Controller;
 
-import TFG.Terranaturale.Dto.*;
+import Dto.FacturaDTO;
+
+import Dto.FileUpload;
+import Dto.UsuarioDTO;
 import TFG.Terranaturale.Service.FacturaService;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;

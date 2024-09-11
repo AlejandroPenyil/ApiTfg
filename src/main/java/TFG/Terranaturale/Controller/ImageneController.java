@@ -1,8 +1,9 @@
 package TFG.Terranaturale.Controller;
 
-import TFG.Terranaturale.Dto.ImageneDTO;
-import TFG.Terranaturale.Dto.ImageneUploadDto;
-import TFG.Terranaturale.Dto.UsuarioDTO;
+import Dto.ImageneDTO;
+import Dto.ImageneUploadDto;
+import Dto.UsuarioDTO;
+
 import TFG.Terranaturale.Service.ImageneService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

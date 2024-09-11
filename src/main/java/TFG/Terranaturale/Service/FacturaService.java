@@ -1,14 +1,14 @@
 package TFG.Terranaturale.Service;
 
-import TFG.Terranaturale.Dto.FacturaDTO;
-import TFG.Terranaturale.Dto.FileUpload;
-import TFG.Terranaturale.Dto.ImageneDTO;
-import TFG.Terranaturale.Dto.UsuarioDTO;
-import TFG.Terranaturale.Exception.ResourceNotFoundException;
-import TFG.Terranaturale.Model.Factura;
-import TFG.Terranaturale.Model.Imagene;
-import TFG.Terranaturale.Model.Usuario;
+import Dto.FacturaDTO;
+import Dto.FileUpload;
+import Dto.UsuarioDTO;
+import Entity.Factura;
+import Entity.Usuario;
+import Exception.ResourceNotFoundException;
+
 import TFG.Terranaturale.Repository.FacturaRepository;
+import TFG.Terranaturale.Util.RandomStringGenerator;
 import org.modelmapper.ModelMapper;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -100,11 +101,11 @@ public class FacturaService {
             saveToFile(bytes, "C:\\Terranaturale\\Documents\\Facturas\\" + random + imagenDTO.getFileName());
 
             FacturaDTO immageneSaveDTO = new FacturaDTO();
-            immageneSaveDTO.setIdCliente(9);
+            immageneSaveDTO.setIdCliente(1);
             immageneSaveDTO.setUbicacion("C:\\Terranaturale\\Documents\\Facturas\\" + random + imagenDTO.getFileName());
 
             Factura imagene = modelMapper.map(immageneSaveDTO, Factura.class);
-            imagene.setFecha(Instant.now());
+            imagene.setFecha(ZonedDateTime.now());
 
             facturaRepository.save(imagene);
 

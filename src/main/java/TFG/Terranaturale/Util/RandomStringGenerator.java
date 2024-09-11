@@ -1,4 +1,4 @@
-package TFG.Terranaturale.Service;
+package TFG.Terranaturale.Util;
 
 import java.security.SecureRandom;
 

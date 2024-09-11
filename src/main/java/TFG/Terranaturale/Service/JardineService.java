@@ -1,9 +1,10 @@
 package TFG.Terranaturale.Service;
 
-import TFG.Terranaturale.Dto.JardineDTO;
-import TFG.Terranaturale.Exception.ResourceNotFoundException;
-import TFG.Terranaturale.Model.Jardine;
-import TFG.Terranaturale.Model.Usuario;
+import Dto.JardineDTO;
+import Entity.Jardine;
+import Entity.Usuario;
+import Exception.ResourceNotFoundException;
+
 import TFG.Terranaturale.Repository.JardineRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;

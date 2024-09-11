@@ -1,9 +1,10 @@
 package TFG.Terranaturale.Service;
 
-import TFG.Terranaturale.Dto.UsuarioDTO;
-import TFG.Terranaturale.Exception.InvalidCredentialsException;
-import TFG.Terranaturale.Exception.ResourceNotFoundException;
-import TFG.Terranaturale.Model.Usuario;
+import Dto.UsuarioDTO;
+import Exception.ResourceNotFoundException;
+import Exception.InvalidCredentialsException;
+
+import Entity.Usuario;
 import TFG.Terranaturale.Repository.UsuarioRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,7 @@
 package TFG.Terranaturale.Controller;
 
-import TFG.Terranaturale.Dto.SolicitudeDTO;
+import Dto.SolicitudeDTO;
+
 import TFG.Terranaturale.Service.SolicitudeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

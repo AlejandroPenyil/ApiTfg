@@ -1,12 +1,14 @@
 package TFG.Terranaturale.Service;
 
-import TFG.Terranaturale.Dto.ImageneDTO;
-import TFG.Terranaturale.Dto.ImageneUploadDto;
-import TFG.Terranaturale.Dto.UsuarioDTO;
-import TFG.Terranaturale.Exception.ResourceNotFoundException;
-import TFG.Terranaturale.Model.Imagene;
-import TFG.Terranaturale.Model.Usuario;
+import Dto.ImageneDTO;
+import Dto.ImageneUploadDto;
+import Dto.UsuarioDTO;
+import Entity.Imagene;
+import Entity.Usuario;
+import Exception.ResourceNotFoundException;
+
 import TFG.Terranaturale.Repository.ImageneRepository;
+import TFG.Terranaturale.Util.RandomStringGenerator;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -82,13 +84,13 @@ public class ImageneService {
             String random = RandomStringGenerator.generateRandomString(8);
 
             // Guardar los bytes en un archivo
-            saveToFile(bytes, "C:\\xampp\\htdocs\\images\\" + random + imagenDTO.getFileName());
+            saveToFile(bytes, "F:\\XAMPP\\htdocs\\images" + random + imagenDTO.getFileName());
 
             ImageneDTO immageneSaveDTO = new ImageneDTO();
             immageneSaveDTO.setComentario(imagenDTO.getImagenDTO().getComentario());
             immageneSaveDTO.setIdJardin(imagenDTO.getImagenDTO().getIdJardin());
             immageneSaveDTO.setIdUsuario(imagenDTO.getImagenDTO().getIdUsuario());
-            immageneSaveDTO.setUbicacion("http://51.124.190.104/images/" + random + imagenDTO.getFileName());
+            immageneSaveDTO.setUbicacion("http://192.168.1.132/images/" + random + imagenDTO.getFileName());
 
             Imagene imagene = modelMapper.map(immageneSaveDTO, Imagene.class);
             imagene.setFecha(Instant.now());

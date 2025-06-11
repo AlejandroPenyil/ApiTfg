@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <!-- Create conversaciones table -->
+    <changeSet id="17" author="liquibase">
+        <createTable tableName="conversaciones">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="id_usuario" type="int">
+                <constraints nullable="false" foreignKeyName="fk_conversacion_usuario" references="usuarios(id)"/>
+            </column>
+            <column name="fecha_creacion" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="titulo" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Create mensajes table -->
+    <changeSet id="18" author="liquibase">
+        <createTable tableName="mensajes">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="id_conversacion" type="int">
+                <constraints nullable="false" foreignKeyName="fk_mensaje_conversacion" references="conversaciones(id)"/>
+            </column>
+            <column name="id_emisor" type="int">
+                <constraints nullable="false" foreignKeyName="fk_mensaje_emisor" references="usuarios(id)"/>
+            </column>
+            <column name="contenido" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fecha_envio" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="leido" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

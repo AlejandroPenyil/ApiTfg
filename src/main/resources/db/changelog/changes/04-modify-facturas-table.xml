@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <!-- Add additional fields to facturas table -->
+    <changeSet id="13" author="liquibase">
+        <addColumn tableName="facturas">
+            <column name="numero_factura" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total" type="decimal(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subtotal" type="decimal(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="iva" type="decimal(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="descuento" type="decimal(10,2)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="notas" type="varchar(500)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <!-- Create detalles_factura table -->
+    <changeSet id="14" author="liquibase">
+        <createTable tableName="detalles_factura">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="id_factura" type="int">
+                <constraints nullable="false" foreignKeyName="fk_detalles_factura" references="facturas(id)"/>
+            </column>
+            <column name="id_costo" type="int">
+                <constraints nullable="false" foreignKeyName="fk_detalles_costo" references="costos(id)"/>
+            </column>
+            <column name="cantidad" type="decimal(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="precio_unitario" type="decimal(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subtotal" type="decimal(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="descripcion" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

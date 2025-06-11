@@ -1,22 +1,21 @@
 package TFG.Terranaturale.Controller;
 
-import Dto.FacturaDTO;
-
-import Dto.FileUpload;
-import Dto.UsuarioDTO;
 import TFG.Terranaturale.Service.FacturaService;
-import org.springframework.core.io.InputStreamResource;
+import TFG.Terranaturale.model.Dto.FacturaDTO;
+import TFG.Terranaturale.model.Dto.UsuarioDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
 @RequestMapping("/facturas")
 public class FacturaController {
+    private static final Logger logger = LoggerFactory.getLogger(FacturaController.class);
 
-    private final  FacturaService facturaService;
+    private final FacturaService facturaService;
 
     public FacturaController(FacturaService facturaService) {
         this.facturaService = facturaService;
@@ -24,57 +23,71 @@ public class FacturaController {
 
     @GetMapping
     public ResponseEntity<List<FacturaDTO>> getAllFacturas() {
-        return ResponseEntity.ok(facturaService.findAll());
+        logger.info("GET request to get all facturas");
+        List<FacturaDTO> facturas = facturaService.findAll();
+        logger.info("Returning {} facturas", facturas.size());
+        return ResponseEntity.ok(facturas);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<FacturaDTO> getFacturaById(@PathVariable Integer id) {
-        FacturaDTO facturaDTO = facturaService.findById(id);
-        if (facturaDTO == null) {
+        logger.info("GET request to get factura with id: {}", id);
+        try {
+            FacturaDTO facturaDTO = facturaService.findById(id);
+            logger.info("Returning factura with id: {}", id);
+            return ResponseEntity.ok(facturaDTO);
+        } catch (Exception e) {
+            logger.warn("Factura with id {} not found", id);
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(facturaDTO);
     }
 
     @PostMapping
     public ResponseEntity<FacturaDTO> createFactura(@RequestBody FacturaDTO facturaDTO) {
+        logger.info("POST request to create factura");
         FacturaDTO createdFactura = facturaService.save(facturaDTO);
+        logger.info("Created factura with id: {}", createdFactura.getId());
         return ResponseEntity.ok(createdFactura);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<FacturaDTO> updateFactura(@PathVariable Integer id, @RequestBody FacturaDTO facturaDTO) {
-        FacturaDTO existingFactura = facturaService.findById(id);
-        if (existingFactura == null) {
+        logger.info("PUT request to update factura with id: {}", id);
+        try {
+            facturaDTO.setId(id);
+            FacturaDTO updatedFactura = facturaService.update(id, facturaDTO);
+            logger.info("Updated factura with id: {}", updatedFactura.getId());
+            return ResponseEntity.ok(updatedFactura);
+        } catch (Exception e) {
+            logger.warn("Factura with id {} not found for update", id);
             return ResponseEntity.notFound().build();
         }
-        facturaDTO.setId(id);
-        FacturaDTO updatedFactura = facturaService.save(facturaDTO);
-        return ResponseEntity.ok(updatedFactura);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFactura(@PathVariable Integer id) {
-        FacturaDTO existingFactura = facturaService.findById(id);
-        if (existingFactura == null) {
+        logger.info("DELETE request to delete factura with id: {}", id);
+        try {
+            facturaService.deleteById(id);
+            logger.info("Deleted factura with id: {}", id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            logger.warn("Factura with id {} not found for deletion", id);
             return ResponseEntity.notFound().build();
         }
-        facturaService.deleteById(id);
-        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/client")
     public ResponseEntity<List<FacturaDTO>> getPresupuestoByClientId(@RequestBody UsuarioDTO id) {
-        return facturaService.findByClient(id);
+        logger.info("POST request to get facturas by client id");
+        ResponseEntity<List<FacturaDTO>> response = facturaService.findByClient(id);
+        logger.info("Returning {} facturas for client", response.getBody().size());
+        return response;
     }
 
 //    @GetMapping("/douwnload/{id}")
 //    public ResponseEntity<InputStreamResource> downloadPresupuesto(@PathVariable Integer id) throws IOException {
+//        logger.info("GET request to download factura with id: {}", id);
 //        return facturaService.downloadFactura(id);
 //    }
-
-    @PostMapping("/upload")
-    public void uploadImagene(@RequestBody FileUpload imagenDTO) {
-        facturaService.uploadFile(imagenDTO);
-    }
 }

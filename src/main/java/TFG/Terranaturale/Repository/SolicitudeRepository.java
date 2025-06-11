@@ -1,8 +1,7 @@
 package TFG.Terranaturale.Repository;
 
-import Entity.Solicitude;
-
-import Entity.Usuario;
+import TFG.Terranaturale.model.Entity.Solicitude;
+import TFG.Terranaturale.model.Entity.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

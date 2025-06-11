@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="07" author="data-init">
+        <!-- Insert root user with encrypted password -->
+        <!-- The encrypted password format is "salt:hash" where both are Base64 encoded -->
+        <!-- This is a pre-computed encrypted value for password "root" -->
+        <insert tableName="usuarios">
+            <column name="Nombre">Administrator</column>
+            <column name="Apellidos">System</column>
+            <column name="Contraseña">UkFORE9NU0FMVDE2QllURVM=:jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=</column>
+            <column name="Correo">admin@terranaturale.com</column>
+            <column name="DNI">00000000X</column>
+            <column name="rol">ADMIN</column>
+            <column name="telefono">000000000</column>
+            <column name="direccion">System</column>
+            <column name="user_name">root</column>
+        </insert>
+
+        <!-- Insert sample client user -->
+        <insert tableName="usuarios">
+            <column name="Nombre">Cliente</column>
+            <column name="Apellidos">Ejemplo</column>
+            <column name="Contraseña">Q0xJRU5UU0FMVDE2QllURVM=:jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=</column>
+            <column name="Correo">cliente@ejemplo.com</column>
+            <column name="DNI">11111111Y</column>
+            <column name="rol">CLIENT</column>
+            <column name="telefono">111111111</column>
+            <column name="direccion">Calle Ejemplo 1</column>
+            <column name="user_name">cliente</column>
+        </insert>
+
+        <!-- Insert sample employee user -->
+        <insert tableName="usuarios">
+            <column name="Nombre">Empleado</column>
+            <column name="Apellidos">Ejemplo</column>
+            <column name="Contraseña">RU1QTEVBRE9TQUxUMTZCWVRFUw==:jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=</column>
+            <column name="Correo">empleado@terranaturale.com</column>
+            <column name="DNI">22222222Z</column>
+            <column name="rol">ADMIN</column>
+            <column name="telefono">222222222</column>
+            <column name="direccion">Calle Ejemplo 2</column>
+            <column name="user_name">empleado</column>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

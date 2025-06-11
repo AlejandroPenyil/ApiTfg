@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <!-- Create unit table -->
+    <changeSet id="02" author="liquibase">
+        <createTable tableName="unidad">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="codigo" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nombre" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Create categoria_de_coste table -->
+    <changeSet id="03" author="liquibase">
+        <createTable tableName="categoria_de_coste">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="nombre" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Create activos table -->
+    <changeSet id="04" author="liquibase">
+        <createTable tableName="activos">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="cantidad" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nombre" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Create jardines table -->
+    <changeSet id="05" author="liquibase">
+        <createTable tableName="jardines">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="localizacion" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tamaño" type="int">
+                <constraints nullable="true"/>
+            </column>
+            <column name="id_cliente" type="int">
+                <constraints nullable="false" foreignKeyName="fk_jardines_usuarios" references="usuarios(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Create solicitudes table -->
+    <changeSet id="06" author="liquibase">
+        <createTable tableName="solicitudes">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="fecha_solicitud" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id_usuario" type="int">
+                <constraints nullable="false" foreignKeyName="fk_solicitudes_usuarios" references="usuarios(id)"/>
+            </column>
+            <column name="descripcion" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="atendida" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Create documentos table -->
+    <changeSet id="07" author="liquibase">
+        <createTable tableName="documentos">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="es_carpeta" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nombre" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fecha" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id_cliente" type="int">
+                <constraints nullable="false" foreignKeyName="fk_documentos_usuarios" references="usuarios(id)"/>
+            </column>
+            <column name="id_parent" type="int">
+                <constraints nullable="true" foreignKeyName="fk_documentos_parent" references="documentos(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Create presupuestos table -->
+    <changeSet id="08" author="liquibase">
+        <createTable tableName="presupuestos">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="fechal_envio" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fecha_aceptado" type="datetime">
+                <constraints nullable="true"/>
+            </column>
+            <column name="estado" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id_jardin" type="int">
+                <constraints nullable="false" foreignKeyName="fk_presupuestos_jardines" references="jardines(id)"/>
+            </column>
+            <column name="id_solicitud" type="int">
+                <constraints nullable="true" foreignKeyName="fk_presupuestos_solicitudes" references="solicitudes(id)"/>
+            </column>
+            <column name="id_document" type="int">
+                <constraints nullable="false" foreignKeyName="fk_presupuestos_documentos" references="documentos(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Create facturas table -->
+    <changeSet id="09" author="liquibase">
+        <createTable tableName="facturas">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="fecha" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id_cliente" type="int">
+                <constraints nullable="false" foreignKeyName="fk_facturas_usuarios" references="usuarios(id)"/>
+            </column>
+            <column name="id_document" type="int">
+                <constraints nullable="false" foreignKeyName="fk_facturas_documentos" references="documentos(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Create imagenes table -->
+    <changeSet id="10" author="liquibase">
+        <createTable tableName="imagenes">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="fecha" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id_document" type="int">
+                <constraints nullable="false" foreignKeyName="fk_imagenes_documentos" references="documentos(id)"/>
+            </column>
+            <column name="id_jardin" type="int">
+                <constraints nullable="false" foreignKeyName="fk_imagenes_jardines" references="jardines(id)"/>
+            </column>
+            <column name="id_usuario" type="int">
+                <constraints nullable="false" foreignKeyName="fk_imagenes_usuarios" references="usuarios(id)"/>
+            </column>
+            <column name="comentario" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Create costos table -->
+    <changeSet id="11" author="liquibase">
+        <createTable tableName="costos">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="costo_por_unidad" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nombre" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id_unidad" type="int">
+                <constraints nullable="false" foreignKeyName="fk_costos_unidad" references="unidad(id)"/>
+            </column>
+            <column name="id_categoria_de_coste" type="int">
+                <constraints nullable="true" foreignKeyName="fk_costos_categoria" references="categoria_de_coste(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

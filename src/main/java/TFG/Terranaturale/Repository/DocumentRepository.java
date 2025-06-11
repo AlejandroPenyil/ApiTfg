@@ -1,6 +1,6 @@
 package TFG.Terranaturale.Repository;
 
-import Entity.Documentos;
+import TFG.Terranaturale.model.Entity.Documentos;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

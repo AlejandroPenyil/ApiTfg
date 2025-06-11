@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <!-- Add additional fields to presupuestos table -->
+    <changeSet id="15" author="liquibase">
+        <addColumn tableName="presupuestos">
+            <column name="numero_presupuesto" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total" type="decimal(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subtotal" type="decimal(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="iva" type="decimal(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="descuento" type="decimal(10,2)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="notas" type="varchar(500)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="validez" type="int">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <!-- Create detalles_presupuesto table -->
+    <changeSet id="16" author="liquibase">
+        <createTable tableName="detalles_presupuesto">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="id_presupuesto" type="int">
+                <constraints nullable="false" foreignKeyName="fk_detalles_presupuesto" references="presupuestos(id)"/>
+            </column>
+            <column name="id_costo" type="int">
+                <constraints nullable="false" foreignKeyName="fk_detalles_presupuesto_costo" references="costos(id)"/>
+            </column>
+            <column name="cantidad" type="decimal(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="precio_unitario" type="decimal(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subtotal" type="decimal(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="descripcion" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

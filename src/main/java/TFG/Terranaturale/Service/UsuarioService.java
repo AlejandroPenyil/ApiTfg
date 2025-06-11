@@ -1,85 +1,145 @@
 package TFG.Terranaturale.Service;
 
-import Dto.UsuarioDTO;
-import Exception.ResourceNotFoundException;
-import Exception.InvalidCredentialsException;
+import TFG.Terranaturale.model.Dto.PasswordResetRequest;
+import TFG.Terranaturale.model.Dto.UsuarioDTO;
+import TFG.Terranaturale.model.Exception.ResourceNotFoundException;
+import TFG.Terranaturale.model.Exception.InvalidCredentialsException;
 
-import Entity.Usuario;
+import TFG.Terranaturale.model.Entity.Usuario;
 import TFG.Terranaturale.Repository.UsuarioRepository;
+import TFG.Terranaturale.Util.PasswordUtils;
+import TFG.Terranaturale.dto.UsuarioResponseDTO;
 import org.modelmapper.ModelMapper;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
-    private ModelMapper modelMapper;
-    private final PasswordEncoder passwordEncoder;
+    private final ModelMapper modelMapper;
+    private final PasswordUtils passwordUtils;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
+    public UsuarioService(UsuarioRepository usuarioRepository, ModelMapper modelMapper, PasswordUtils passwordUtils) {
         this.usuarioRepository = usuarioRepository;
         this.modelMapper = modelMapper;
-        this.passwordEncoder = passwordEncoder;
+        this.passwordUtils = passwordUtils;
     }
 
-    public ResponseEntity<List<UsuarioDTO>> getAllUsuarios() {
+    /**
+     * Get all users without sensitive information.
+     */
+    public ResponseEntity<List<UsuarioResponseDTO>> getAllUsuarios() {
         List<Usuario> usuarios = usuarioRepository.findAll();
-        List<UsuarioDTO> usuarioDTOS = new ArrayList<>();
-        for (Usuario usuario : usuarios) {
-            UsuarioDTO usuarioDTO = modelMapper.map(usuario, UsuarioDTO.class);
-            usuarioDTOS.add(usuarioDTO);
+        List<UsuarioResponseDTO> usuarioResponseDTOs = usuarios.stream()
+                .map(usuario -> modelMapper.map(usuario, UsuarioResponseDTO.class))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok().body(usuarioResponseDTOs);
+    }
+
+    /**
+     * Get user by ID without sensitive information.
+     */
+    public ResponseEntity<UsuarioResponseDTO> getUsuarioById(Integer id) {
+        return ResponseEntity.ok().body(
+                modelMapper.map(usuarioRepository.findById(id), UsuarioResponseDTO.class)
+        );
+    }
+
+    /**
+     * Create or update a user.
+     * Returns user data without sensitive information.
+     */
+    public ResponseEntity<UsuarioResponseDTO> createOrUpdateUsuario(UsuarioDTO usuario) {
+        try {
+        // Validaciones básicas
+        if (usuario == null) {
+            return ResponseEntity.badRequest().build();
         }
 
-
-        return ResponseEntity.ok().body(usuarioDTOS);
-    }
-
-    public ResponseEntity<UsuarioDTO> getUsuarioById(Integer id) {
-        return ResponseEntity.ok().body(modelMapper.map(usuarioRepository.findById(id), UsuarioDTO.class));
-    }
-
-    public ResponseEntity<UsuarioDTO> createOrUpdateUsuario(UsuarioDTO usuario) {
         Usuario usuarioEntity = modelMapper.map(usuario, Usuario.class);
 
-        // Verificar si la contraseña proporcionada ya está encriptada
-        if (!isPasswordEncrypted(usuario.getContraseña())) {
-            // Si la contraseña no está encriptada, encriptarla antes de guardarla
-            String encryptedPassword = passwordEncoder.encode(usuario.getContraseña());
+        // Encrypt password before storing
+        String rawPassword = usuario.getContraseña();
+        if (rawPassword != null && !rawPassword.isEmpty()) {
+            String encryptedPassword = passwordUtils.encryptPassword(rawPassword);
             usuarioEntity.setContraseña(encryptedPassword);
         }
 
-        // Guardar el usuario en la base de datos
+        // Guardar con manejo de excepciones
         Usuario savedUsuario = usuarioRepository.save(usuarioEntity);
+        UsuarioResponseDTO usuarioResponseDTO = modelMapper.map(savedUsuario, UsuarioResponseDTO.class);
+        return ResponseEntity.ok().body(usuarioResponseDTO);
 
-        // Mapear y devolver la respuesta
-        UsuarioDTO usuarioDTO = modelMapper.map(savedUsuario, UsuarioDTO.class);
-        return ResponseEntity.ok().body(usuarioDTO);
+    } catch (DataIntegrityViolationException e) {
+        // Manejar violaciones de integridad de datos
+        return ResponseEntity.status(HttpStatus.CONFLICT).build();
+    } catch (Exception e) {
+        // Manejar otras excepciones
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
-
-    private boolean isPasswordEncrypted(String password) {
-        // Puedes implementar tu propia lógica para verificar si la contraseña está encriptada
-        // Por ejemplo, verificar si comienza con un prefijo específico o si sigue un formato determinado
-        // En este ejemplo, asumimos que una contraseña encriptada comienza con "$2a$"
-        return password.startsWith("$2a$");
-    }
+}
 
     public void deleteUsuario(Integer id) {
         usuarioRepository.deleteById(id);
     }
 
-    public UsuarioDTO login(String userName, String contraseña) {
+    /**
+     * Find a user by username.
+     * Returns user data without sensitive information.
+     */
+    public UsuarioResponseDTO findByUserName(String userName) {
         Usuario usuario = usuarioRepository.findByUserName(userName)
-                .orElseThrow(() -> new ResourceNotFoundException("Nombre de usuario no encontrado"));
+                .orElse(null);
 
-        if (!passwordEncoder.matches(contraseña, usuario.getContraseña())) {
-            throw new InvalidCredentialsException("Contraseña incorrecta");
+        if (usuario == null) {
+            return null;
         }
 
-        return modelMapper.map(usuario, UsuarioDTO.class);
+        // Return user data without sensitive information
+        return modelMapper.map(usuario, UsuarioResponseDTO.class);
+    }
+
+    /**
+     * Reset a user's password.
+     * 
+     * @param resetRequest the password reset request containing identifier and new password
+     * @return ResponseEntity with the updated user data without sensitive information
+     */
+    public ResponseEntity<UsuarioResponseDTO> resetPassword(PasswordResetRequest resetRequest) {
+        if (resetRequest == null || resetRequest.getIdentifier() == null || resetRequest.getNewPassword() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        // Try to find user by username
+        Optional<Usuario> usuarioOptional = usuarioRepository.findByUserName(resetRequest.getIdentifier());
+
+        // If not found by username, try by email
+        if (!usuarioOptional.isPresent()) {
+            usuarioOptional = usuarioRepository.findByCorreo(resetRequest.getIdentifier());
+        }
+
+        if (usuarioOptional.isPresent()) {
+            Usuario usuario = usuarioOptional.get();
+
+            // Encrypt the new password
+            String encryptedPassword = passwordUtils.encryptPassword(resetRequest.getNewPassword());
+            usuario.setContraseña(encryptedPassword);
+
+            // Save the updated user
+            usuario = usuarioRepository.save(usuario);
+
+            // Return the updated user without sensitive information
+            return ResponseEntity.ok(modelMapper.map(usuario, UsuarioResponseDTO.class));
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
